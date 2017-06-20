@@ -3,6 +3,7 @@ package viber
 import (
 	"crypto/hmac"
 	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -48,7 +49,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	r.Body.Close()
 
-	if !v.checkMAC(body, []byte(r.Header.Get("X-Viber-Content-Signature"))) {
+	if !v.checkHMAC(body, r.Header.Get("X-Viber-Content-Signature")) {
 		return
 	}
 
@@ -96,10 +97,9 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// checkMAC reports whether messageMAC is a valid HMAC tag for message.
-func (v *Viber) checkMAC(message, messageMAC []byte) bool {
-	mac := hmac.New(sha256.New, []byte(v.AppKey))
-	mac.Write(message)
-	expectedMAC := mac.Sum(nil)
-	return hmac.Equal(messageMAC, expectedMAC)
+// checkHMAC reports whether messageMAC is a valid HMAC tag for message.
+func (v *Viber) checkHMAC(message []byte, messageMAC string) bool {
+	hmac := hmac.New(sha256.New, []byte(v.AppKey))
+	hmac.Write(message)
+	return messageMAC == hex.EncodeToString(hmac.Sum(nil))
 }
