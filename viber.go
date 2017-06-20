@@ -16,11 +16,11 @@ type Sender struct {
 	Avatar string `json:"avatar,omitempty"`
 }
 
-type event struct {
+type Event struct {
 	Event        string    `json:"event"`
 	Timestamp    Timestamp `json:"timestamp"`
 	UserID       string    `json:"user_id"`
-	MessageToken string    `json:"message_token"`
+	MessageToken uint64    `json:"message_token"`
 	Descr        string    `json:"descr"`
 }
 
@@ -32,10 +32,10 @@ type Viber struct {
 	Subscribed          func(u User, msgToken string, t time.Time)
 	ConversationStarted func()
 	Message             func()
-	Unsubscribed        func(userID, msgToken string, t time.Time)
-	Delivered           func(userID, msgToken string, t time.Time)
-	Seen                func(userID, msgToken string, t time.Time)
-	Failed              func(userID, msgToken, descr string, t time.Time)
+	Unsubscribed        func(userID string, msgToken uint64, t time.Time)
+	Delivered           func(userID string, msgToken uint64, t time.Time)
+	Seen                func(userID string, msgToken uint64, t time.Time)
+	Failed              func(userID string, msgToken uint64, descr string, t time.Time)
 }
 
 func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +50,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var e event
+	var e Event
 	if err := json.Unmarshal(body, &e); err != nil {
 		//return
 	}

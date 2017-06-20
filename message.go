@@ -25,7 +25,7 @@ type MessageType string
 type messageResponse struct {
 	Status        int    `json:"status"`
 	StatusMessage string `json:"status_message"`
-	MessageToken  int64  `json:"message_token"`
+	MessageToken  uint64 `json:"message_token"`
 }
 
 // Message interface for all types of viber messages
@@ -117,7 +117,7 @@ const (
 
 //video, file, location, contact, sticker, carousel content
 
-func parseMsgResponse(b []byte) (token int64, err error) {
+func parseMsgResponse(b []byte) (msgToken uint64, err error) {
 	var resp messageResponse
 	if err := json.Unmarshal(b, &resp); err != nil {
 		return 0, err
@@ -130,7 +130,7 @@ func parseMsgResponse(b []byte) (token int64, err error) {
 	return resp.MessageToken, nil
 }
 
-func (v *Viber) sendMessage(url string, m interface{}) (token int64, err error) {
+func (v *Viber) sendMessage(url string, m interface{}) (msgToken uint64, err error) {
 	b, err := v.PostData(url, m)
 	if err != nil {
 		return 0, err
@@ -149,7 +149,7 @@ func (v *Viber) NewTextMessage(msg string) *TextMessage {
 }
 
 // SendTextMessage to reciever, returns message token
-func (v *Viber) SendTextMessage(receiver string, msg string) (token int64, err error) {
+func (v *Viber) SendTextMessage(receiver string, msg string) (msgToken uint64, err error) {
 	m := v.NewTextMessage(msg)
 	m.Receiver = receiver
 	return v.sendMessage("https://chatapi.viber.com/pa/send_message", m)
@@ -167,7 +167,7 @@ func (v *Viber) NewURLMessage(msg string, url string) *URLMessage {
 }
 
 // SendURLMessage to receiver, return message token
-func (v *Viber) SendURLMessage(receiver string, s Sender, msg string, url string) (token int64, err error) {
+func (v *Viber) SendURLMessage(receiver string, s Sender, msg string, url string) (msgToken uint64, err error) {
 	m := v.NewURLMessage(msg, url)
 	return v.sendMessage("https://chatapi.viber.com/pa/send_message", m)
 }
@@ -265,12 +265,12 @@ func (v *Viber) SendCarousel(receiver string) {
 
 }
 
-func (v *Viber) SendPublicMessage(from string, m Message) (token int64, err error) {
+func (v *Viber) SendPublicMessage(from string, m Message) (msgToken uint64, err error) {
 	m.SetFrom(from)
 	return v.sendMessage("https://chatapi.viber.com/pa/post", m)
 }
 
-func (v *Viber) SendMessage(to string, m Message) (token int64, err error) {
+func (v *Viber) SendMessage(to string, m Message) (msgToken uint64, err error) {
 	m.SetReceiver(to)
 	return v.sendMessage("https://chatapi.viber.com/pa/send_message", m)
 }
