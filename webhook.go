@@ -28,7 +28,7 @@ type WebhookReq struct {
 type WebhookResp struct {
 	Status        int      `json:"status"`
 	StatusMessage string   `json:"status_message"`
-	EventTypes    []string `json:"event_types"`
+	EventTypes    []string `json:"event_types,omitempty"`
 }
 
 // WebhookVerify response
@@ -39,6 +39,10 @@ type WebhookVerify struct {
 }
 
 // SetWebhook for Viber callbacks
+// if eventTypes is nil, all callbacks will be set to webhook
+// if eventTypes is empty []string mandatory callbacks will be set
+// Mandatory callbacks: "message", "subscribed", "unsubscribed"
+// All possible callbacks: "delivered", "seen", "failed", "subscribed",  "unsubscribed", "conversation_started"
 func (v *Viber) SetWebhook(url string, eventTypes []string) (WebhookResp, error) {
 
 	req := WebhookReq{
