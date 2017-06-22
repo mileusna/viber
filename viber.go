@@ -44,13 +44,13 @@ type Viber struct {
 	Sender Sender
 
 	// event methods
-	Subscribed          func(u User, token uint64, t time.Time)
-	ConversationStarted func(u User, conversationType, context string, subscribed bool, token uint64, t time.Time) Message
-	Message             func(u User, m Message, token uint64, t time.Time)
-	Unsubscribed        func(userID string, token uint64, t time.Time)
-	Delivered           func(userID string, token uint64, t time.Time)
-	Seen                func(userID string, token uint64, t time.Time)
-	Failed              func(userID string, token uint64, descr string, t time.Time)
+	Subscribed          func(v *Viber, u User, token uint64, t time.Time)
+	ConversationStarted func(v *Viber, u User, conversationType, context string, subscribed bool, token uint64, t time.Time) Message
+	Message             func(v *Viber, u User, m Message, token uint64, t time.Time)
+	Unsubscribed        func(v *Viber, userID string, token uint64, t time.Time)
+	Delivered           func(v *Viber, userID string, token uint64, t time.Time)
+	Seen                func(v *Viber, userID string, token uint64, t time.Time)
+	Failed              func(v *Viber, userID string, token uint64, descr string, t time.Time)
 }
 
 var regexpPeekMsgType = regexp.MustCompile("\"type\":\\s*\"(.*)\"")
@@ -82,7 +82,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case "unsubscribed":
 		if v.Unsubscribed != nil {
-			go v.Unsubscribed(e.UserID, e.MessageToken, e.Timestamp.Time)
+			go v.Unsubscribed(v, e.UserID, e.MessageToken, e.Timestamp.Time)
 		}
 
 	case "conversation_started":
@@ -91,7 +91,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			if err := json.Unmarshal(e.User, &u); err != nil {
 				return
 			}
-			if msg := v.ConversationStarted(u, e.Type, e.Context, e.Subscribed, e.MessageToken, e.Timestamp.Time); msg != nil {
+			if msg := v.ConversationStarted(v, u, e.Type, e.Context, e.Subscribed, e.MessageToken, e.Timestamp.Time); msg != nil {
 				msg.SetReceiver("")
 				msg.SetFrom("")
 				b, _ := json.Marshal(msg)
@@ -101,17 +101,17 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case "delivered":
 		if v.Delivered != nil {
-			go v.Delivered(e.UserID, e.MessageToken, e.Timestamp.Time)
+			go v.Delivered(v, e.UserID, e.MessageToken, e.Timestamp.Time)
 		}
 
 	case "seen":
 		if v.Seen != nil {
-			go v.Seen(e.UserID, e.MessageToken, e.Timestamp.Time)
+			go v.Seen(v, e.UserID, e.MessageToken, e.Timestamp.Time)
 		}
 
 	case "failed":
 		if v.Failed != nil {
-			go v.Failed(e.UserID, e.MessageToken, e.Descr, e.Timestamp.Time)
+			go v.Failed(v, e.UserID, e.MessageToken, e.Descr, e.Timestamp.Time)
 		}
 
 	case "message":
@@ -128,28 +128,28 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				if err := json.Unmarshal(e.Message, &m); err != nil {
 					return
 				}
-				go v.Message(u, &m, e.MessageToken, e.Timestamp.Time)
+				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
 
 			case "picture":
 				var m PictureMessage
 				if err := json.Unmarshal(e.Message, &m); err != nil {
 					return
 				}
-				go v.Message(u, &m, e.MessageToken, e.Timestamp.Time)
+				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
 
 			case "video":
 				var m VideoMessage
 				if err := json.Unmarshal(e.Message, &m); err != nil {
 					return
 				}
-				go v.Message(u, &m, e.MessageToken, e.Timestamp.Time)
+				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
 
 			case "url":
 				var m URLMessage
 				if err := json.Unmarshal(e.Message, &m); err != nil {
 					return
 				}
-				go v.Message(u, &m, e.MessageToken, e.Timestamp.Time)
+				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
 
 			case "contact":
 				// TODO
