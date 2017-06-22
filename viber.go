@@ -77,7 +77,11 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch e.Event {
 	case "subscribed":
 		if v.Subscribed != nil {
-
+			var u User
+			if err := json.Unmarshal(e.User, &u); err != nil {
+				return
+			}
+			go v.Subscribed(v, u, e.MessageToken, e.Timestamp.Time)
 		}
 
 	case "unsubscribed":
