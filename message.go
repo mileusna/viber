@@ -155,6 +155,7 @@ func (v *Viber) SendTextMessage(receiver string, msg string) (msgToken uint64, e
 	return v.sendMessage("https://chatapi.viber.com/pa/send_message", m)
 }
 
+// NewURLMessage for viber
 func (v *Viber) NewURLMessage(msg string, url string) *URLMessage {
 	return &URLMessage{
 		TextMessage: TextMessage{
@@ -265,44 +266,54 @@ func (v *Viber) SendCarousel(receiver string) {
 
 }
 
+// SendPublicMessage from public account
 func (v *Viber) SendPublicMessage(from string, m Message) (msgToken uint64, err error) {
 	m.SetFrom(from)
 	return v.sendMessage("https://chatapi.viber.com/pa/post", m)
 }
 
+// SendMessage to receiver
 func (v *Viber) SendMessage(to string, m Message) (msgToken uint64, err error) {
 	m.SetReceiver(to)
 	return v.sendMessage("https://chatapi.viber.com/pa/send_message", m)
 }
 
+// SetReceiver for text message
 func (m *TextMessage) SetReceiver(r string) {
 	m.Receiver = r
 }
 
+// SetReceiver for url message
 func (m *URLMessage) SetReceiver(r string) {
 	m.Receiver = r
 }
 
+// SetReceiver for picture message
 func (m *PictureMessage) SetReceiver(r string) {
 	m.Receiver = r
 }
 
+// SetReceiver for video message
 func (m *VideoMessage) SetReceiver(r string) {
 	m.Receiver = r
 }
 
+// SetFrom to text message for public account message
 func (m *TextMessage) SetFrom(from string) {
 	m.From = from
 }
 
+// SetFrom to url message for public account message
 func (m *URLMessage) SetFrom(from string) {
 	m.From = from
 }
 
+// SetFrom to picture message for public account message
 func (m *PictureMessage) SetFrom(from string) {
 	m.From = from
 }
 
+// SetFrom to video message for public account message
 func (m *VideoMessage) SetFrom(from string) {
 	m.From = from
 }

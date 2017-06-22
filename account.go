@@ -33,6 +33,7 @@ type Account struct {
 }
 
 // AccountInfo returns Public chat info
+// https://developers.viber.com/docs/api/rest-bot-api/#get-account-info
 func (v *Viber) AccountInfo() (Account, error) {
 	var a Account
 	b, err := v.PostData("https://chatapi.viber.com/pa/get_account_info", struct{}{})
