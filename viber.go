@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"regexp"
+	"strings"
 	"time"
 )
 
@@ -16,12 +18,24 @@ type Sender struct {
 	Avatar string `json:"avatar,omitempty"`
 }
 
-type Event struct {
+type event struct {
 	Event        string    `json:"event"`
 	Timestamp    Timestamp `json:"timestamp"`
-	UserID       string    `json:"user_id"`
-	MessageToken uint64    `json:"message_token"`
-	Descr        string    `json:"descr"`
+	MessageToken uint64    `json:"message_token,omitempty"`
+	UserID       string    `json:"user_id,omitempty"`
+
+	// failed event
+	Descr string `json:"descr,omitempty"`
+
+	//conversation_started event
+	Type       string          `json:"type,omitempty"`
+	Context    string          `json:"context,omitempty"`
+	Subscribed bool            `json:"subscribed,omitempty"`
+	User       json.RawMessage `json:"user,omitempty"`
+
+	// message event
+	Sender  json.RawMessage `json:"sender,omitempty"`
+	Message json.RawMessage `json:"message,omitempty"`
 }
 
 // Viber app
@@ -29,15 +43,20 @@ type Viber struct {
 	AppKey string
 	Sender Sender
 
-	Subscribed          func(u User, msgToken string, t time.Time)
-	ConversationStarted func()
-	Message             func()
-	Unsubscribed        func(userID string, msgToken uint64, t time.Time)
-	Delivered           func(userID string, msgToken uint64, t time.Time)
-	Seen                func(userID string, msgToken uint64, t time.Time)
-	Failed              func(userID string, msgToken uint64, descr string, t time.Time)
+	// event methods
+	Subscribed          func(u User, token uint64, t time.Time)
+	ConversationStarted func(u User, conversationType, context string, subscribed bool, token uint64, t time.Time) Message
+	Message             func(u User, m Message, token uint64, t time.Time)
+	Unsubscribed        func(userID string, token uint64, t time.Time)
+	Delivered           func(userID string, token uint64, t time.Time)
+	Seen                func(userID string, token uint64, t time.Time)
+	Failed              func(userID string, token uint64, descr string, t time.Time)
 }
 
+var regexpPeekMsgType = regexp.MustCompile("\"type\":\\s*\"(.*)\"")
+
+// ServeHTTP
+// https://developers.viber.com/docs/api/rest-bot-api/#callbacks
 func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -50,9 +69,9 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var e Event
+	var e event
 	if err := json.Unmarshal(body, &e); err != nil {
-		//return
+		return
 	}
 
 	switch e.Event {
@@ -68,7 +87,16 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case "conversation_started":
 		if v.ConversationStarted != nil {
-
+			var u User
+			if err := json.Unmarshal(e.User, &u); err != nil {
+				return
+			}
+			if msg := v.ConversationStarted(u, e.Type, e.Context, e.Subscribed, e.MessageToken, e.Timestamp.Time); msg != nil {
+				msg.SetReceiver("")
+				msg.SetFrom("")
+				b, _ := json.Marshal(msg)
+				w.Write(b)
+			}
 		}
 
 	case "delivered":
@@ -88,9 +116,49 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case "message":
 		if v.Message != nil {
+			var u User
+			if err := json.Unmarshal(e.Sender, &u); err != nil {
+				return
+			}
 
+			msgType := peakMessageType(e.Message)
+			switch msgType {
+			case "text":
+				var m TextMessage
+				if err := json.Unmarshal(e.Message, &m); err != nil {
+					return
+				}
+				go v.Message(u, &m, e.MessageToken, e.Timestamp.Time)
+
+			case "picture":
+				var m PictureMessage
+				if err := json.Unmarshal(e.Message, &m); err != nil {
+					return
+				}
+				go v.Message(u, &m, e.MessageToken, e.Timestamp.Time)
+
+			case "video":
+				var m VideoMessage
+				if err := json.Unmarshal(e.Message, &m); err != nil {
+					return
+				}
+				go v.Message(u, &m, e.MessageToken, e.Timestamp.Time)
+
+			case "url":
+				var m URLMessage
+				if err := json.Unmarshal(e.Message, &m); err != nil {
+					return
+				}
+				go v.Message(u, &m, e.MessageToken, e.Timestamp.Time)
+
+			case "contact":
+				// TODO
+			case "location":
+				// TODO
+			default:
+				return
+			}
 		}
-
 	}
 }
 
@@ -99,4 +167,14 @@ func (v *Viber) checkHMAC(message []byte, messageMAC string) bool {
 	hmac := hmac.New(sha256.New, []byte(v.AppKey))
 	hmac.Write(message)
 	return messageMAC == hex.EncodeToString(hmac.Sum(nil))
+}
+
+// peakMessageType uses regexp to determin message type for unmarshaling
+func peakMessageType(b []byte) string {
+	matches := regexpPeekMsgType.FindAllSubmatch(b, -1)
+	if len(matches) == 0 {
+		return ""
+	}
+
+	return strings.ToLower(string(matches[0][1]))
 }
