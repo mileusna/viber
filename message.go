@@ -135,7 +135,6 @@ func (v *Viber) sendMessage(url string, m interface{}) (msgToken uint64, err err
 	if err != nil {
 		return 0, err
 	}
-	fmt.Println(string(b))
 	return parseMsgResponse(b)
 }
 
@@ -283,37 +282,7 @@ func (m *TextMessage) SetReceiver(r string) {
 	m.Receiver = r
 }
 
-// SetReceiver for url message
-func (m *URLMessage) SetReceiver(r string) {
-	m.Receiver = r
-}
-
-// SetReceiver for picture message
-func (m *PictureMessage) SetReceiver(r string) {
-	m.Receiver = r
-}
-
-// SetReceiver for video message
-func (m *VideoMessage) SetReceiver(r string) {
-	m.Receiver = r
-}
-
 // SetFrom to text message for public account message
 func (m *TextMessage) SetFrom(from string) {
-	m.From = from
-}
-
-// SetFrom to url message for public account message
-func (m *URLMessage) SetFrom(from string) {
-	m.From = from
-}
-
-// SetFrom to picture message for public account message
-func (m *PictureMessage) SetFrom(from string) {
-	m.From = from
-}
-
-// SetFrom to video message for public account message
-func (m *VideoMessage) SetFrom(from string) {
 	m.From = from
 }

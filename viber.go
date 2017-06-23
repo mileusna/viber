@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -53,7 +54,11 @@ type Viber struct {
 	Failed              func(v *Viber, userID string, token uint64, descr string, t time.Time)
 }
 
-var regexpPeekMsgType = regexp.MustCompile("\"type\":\\s*\"(.*)\"")
+var (
+	// Log errors, set to logger if you want to log package activities and errors
+	Log               = log.New(ioutil.Discard, "Viber >>", 0)
+	regexpPeekMsgType = regexp.MustCompile("\"type\":\\s*\"(.*)\"")
+)
 
 // ServeHTTP
 // https://developers.viber.com/docs/api/rest-bot-api/#callbacks
@@ -61,16 +66,21 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		Log.Println(err)
 		return
 	}
 	r.Body.Close()
 
+	Log.Println("Received from Viber:", string(body))
+
 	if !v.checkHMAC(body, r.Header.Get("X-Viber-Content-Signature")) {
+		Log.Println("X-Viber-Content-Signature doesn't match")
 		return
 	}
 
 	var e event
 	if err := json.Unmarshal(body, &e); err != nil {
+		Log.Println(err)
 		return
 	}
 
@@ -79,6 +89,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if v.Subscribed != nil {
 			var u User
 			if err := json.Unmarshal(e.User, &u); err != nil {
+				Log.Println(err)
 				return
 			}
 			go v.Subscribed(v, u, e.MessageToken, e.Timestamp.Time)
@@ -93,6 +104,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if v.ConversationStarted != nil {
 			var u User
 			if err := json.Unmarshal(e.User, &u); err != nil {
+				Log.Println(err)
 				return
 			}
 			if msg := v.ConversationStarted(v, u, e.Type, e.Context, e.Subscribed, e.MessageToken, e.Timestamp.Time); msg != nil {
@@ -122,6 +134,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if v.Message != nil {
 			var u User
 			if err := json.Unmarshal(e.Sender, &u); err != nil {
+				Log.Println(err)
 				return
 			}
 
@@ -130,6 +143,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			case "text":
 				var m TextMessage
 				if err := json.Unmarshal(e.Message, &m); err != nil {
+					Log.Println(err)
 					return
 				}
 				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
@@ -137,6 +151,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			case "picture":
 				var m PictureMessage
 				if err := json.Unmarshal(e.Message, &m); err != nil {
+					Log.Println(err)
 					return
 				}
 				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
@@ -144,6 +159,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			case "video":
 				var m VideoMessage
 				if err := json.Unmarshal(e.Message, &m); err != nil {
+					Log.Println(err)
 					return
 				}
 				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
@@ -151,6 +167,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			case "url":
 				var m URLMessage
 				if err := json.Unmarshal(e.Message, &m); err != nil {
+					Log.Println(err)
 					return
 				}
 				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)

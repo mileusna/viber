@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -15,7 +14,7 @@ func (v *Viber) PostData(url string, i interface{}) ([]byte, error) {
 		return nil, err
 	}
 
-	log.Println(string(b))
+	Log.Println("Post data:", string(b))
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
 	req.Close = true

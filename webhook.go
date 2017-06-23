@@ -1,9 +1,6 @@
 package viber
 
-import (
-	"encoding/json"
-	"fmt"
-)
+import "encoding/json"
 
 //
 //https://chatapi.viber.com/pa/set_webhook
@@ -42,19 +39,19 @@ type WebhookVerify struct {
 // if eventTypes is nil, all callbacks will be set to webhook
 // if eventTypes is empty []string mandatory callbacks will be set
 // Mandatory callbacks: "message", "subscribed", "unsubscribed"
-// All possible callbacks: "delivered", "seen", "failed", "subscribed",  "unsubscribed", "conversation_started"
+// All possible callbacks: "message", "subscribed",  "unsubscribed", "delivered", "seen", "failed", "conversation_started"
 func (v *Viber) SetWebhook(url string, eventTypes []string) (WebhookResp, error) {
+	var resp WebhookResp
 
 	req := WebhookReq{
 		URL:        url,
 		EventTypes: eventTypes,
 	}
-
 	r, err := v.PostData("https://chatapi.viber.com/pa/set_webhook", req)
+	if err != nil {
+		return resp, err
+	}
 
-	fmt.Println(string(r))
-	var resp WebhookResp
-	json.Unmarshal(r, &resp)
-
+	err = json.Unmarshal(r, &resp)
 	return resp, err
 }
