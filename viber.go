@@ -45,9 +45,9 @@ type Viber struct {
 	Sender Sender
 
 	// event methods
-	Subscribed          func(v *Viber, u User, token uint64, t time.Time)
 	ConversationStarted func(v *Viber, u User, conversationType, context string, subscribed bool, token uint64, t time.Time) Message
 	Message             func(v *Viber, u User, m Message, token uint64, t time.Time)
+	Subscribed          func(v *Viber, u User, token uint64, t time.Time)
 	Unsubscribed        func(v *Viber, userID string, token uint64, t time.Time)
 	Delivered           func(v *Viber, userID string, token uint64, t time.Time)
 	Seen                func(v *Viber, userID string, token uint64, t time.Time)
