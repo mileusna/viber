@@ -60,6 +60,18 @@ var (
 	regexpPeekMsgType = regexp.MustCompile("\"type\":\\s*\"(.*)\"")
 )
 
+// New returns Viber app with specified app key and default sender
+// You can also create *VIber{} struct directly
+func New(appKey, senderName, senderAvatar string) *Viber {
+	return &Viber{
+		AppKey: appKey,
+		Sender: Sender{
+			Name:   senderName,
+			Avatar: senderAvatar,
+		},
+	}
+}
+
 // ServeHTTP
 // https://developers.viber.com/docs/api/rest-bot-api/#callbacks
 func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
