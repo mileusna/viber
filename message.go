@@ -1,9 +1,6 @@
 package viber
 
-import (
-	"encoding/json"
-	"fmt"
-)
+import "encoding/json"
 
 /*
 {
@@ -154,70 +151,6 @@ func (v *Viber) SendURLMessage(receiver string, msg string, url string) (msgToke
 // SendPictureMessage to receiver, returns message token
 func (v *Viber) SendPictureMessage(receiver string, msg string, url string, thumbURL string) (token uint64, err error) {
 	return v.SendMessage(receiver, v.NewPictureMessage(msg, url, thumbURL))
-}
-
-func (v *Viber) sendCarousel(receiver string) {
-	r := RichMediaMessage{
-		MinAPIVersion: 2,
-		Receiver:      receiver,
-		AuthToken:     v.AppKey,
-		Type:          TypeRichMediaMessage,
-		RichMedia: RichMedia{
-			Type:                "rich_media",
-			ButtonsGroupColumns: 6,
-			ButtonsGroupRows:    6,
-			BgColor:             "#FFFFFF",
-		},
-	}
-
-	b1 := Button{
-		Columns:    6,
-		Rows:       3,
-		ActionType: OpenURL,
-		ActionBody: "https://aviokarte.rs/",
-		Image:      "http://nstatic.net/beta/2b5b3ff1972f61d9bcfaaddd061aa1b9.jpg",
-	}
-	r.RichMedia.Buttons = append(r.RichMedia.Buttons, b1)
-
-	b1 = Button{
-		Columns:    6,
-		Rows:       2,
-		ActionType: OpenURL,
-		ActionBody: "https://aviokarte.rs/",
-		Text:       "Košarkaši Crvene zvezde odbranili titulu šampiona Srbije",
-	}
-	r.RichMedia.Buttons = append(r.RichMedia.Buttons, b1)
-
-	b1 = Button{
-		Columns:    3,
-		Rows:       1,
-		ActionType: Reply,
-		ActionBody: "ID: 21432323",
-		Text:       "<font color=#ffffff>Otvori</font>",
-		TextSize:   Large,
-		TextVAlign: Middle,
-		TextHAlign: Center,
-		Image:      "https://s14.postimg.org/4mmt4rw1t/Button.png",
-	}
-	r.RichMedia.Buttons = append(r.RichMedia.Buttons, b1)
-
-	// b2 := Button{
-
-	// 	Columns:    6,
-	// 	Rows:       6,
-	// 	ActionType: "reply",
-	// 	ActionBody: "https://aviokarte.rs/",
-	// 	Image:      "https://aviokarte.rs/images/logo.png",
-	// 	Text:       "Drugi tekst",
-	// 	TextSize:   "large",
-	// 	TextVAlign: "middle",
-	// 	TextHAlign: "left",
-	// }
-	// r.RichMedia.Buttons = append(r.RichMedia.Buttons, b2)
-
-	resp, err := v.PostData("https://chatapi.viber.com/pa/send_message", r)
-	fmt.Println(string(resp), err)
-
 }
 
 // SendPublicMessage from public account
