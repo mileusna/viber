@@ -95,16 +95,19 @@ func (rm *RichMediaMessage) SetReceiver(r string) {
 // SetFrom to satisfy interface although RichMedia messages can't be sent to publich chat and don't have From
 func (rm *RichMediaMessage) SetFrom(from string) {}
 
+// TextSizeSmall for button text
 func (b *Button) TextSizeSmall() *Button {
 	b.TextSize = Small
 	return b
 }
 
+// TextSizeMedium for button text
 func (b *Button) TextSizeMedium() *Button {
 	b.TextSize = Medium
 	return b
 }
 
+// TextSizeLarge for button text
 func (b *Button) TextSizeLarge() *Button {
 	b.TextSize = Large
 	return b
@@ -147,16 +150,19 @@ const (
 	Bottom = TextVAlign("bottom")
 )
 
+// TextVAlignTop vertically align text to the top
 func (b *Button) TextVAlignTop() *Button {
 	b.TextVAlign = Top
 	return b
 }
 
+// TextVAlignMiddle vertically align text to the middle
 func (b *Button) TextVAlignMiddle() *Button {
 	b.TextVAlign = Middle
 	return b
 }
 
+// TextVAlignBottom vertically align text to the bottom
 func (b *Button) TextVAlignBottom() *Button {
 	b.TextVAlign = Bottom
 	return b
@@ -175,16 +181,19 @@ const (
 	Right  = TextHAlign("right")
 )
 
+// TextHAlignLeft horizontaly center text left
 func (b *Button) TextHAlignLeft() *Button {
 	b.TextHAlign = Left
 	return b
 }
 
+// TextHAlignMiddle horizontaly center text
 func (b *Button) TextHAlignMiddle() *Button {
 	b.TextHAlign = Center
 	return b
 }
 
+// TextHAlignRight horizontaly align text right
 func (b *Button) TextHAlignRight() *Button {
 	b.TextHAlign = Right
 	return b
