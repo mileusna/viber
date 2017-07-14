@@ -77,11 +77,11 @@ func New(appKey, senderName, senderAvatar string) *Viber {
 func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
 	if err != nil {
 		Log.Println(err)
 		return
 	}
-	r.Body.Close()
 
 	Log.Println("Received from Viber:", string(body))
 
