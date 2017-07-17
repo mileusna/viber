@@ -1,4 +1,4 @@
-# Go/Golang package for Viber messaging and chatbot
+# Go/Golang package for Viber messaging and chatbot [![GoDoc](https://godoc.org/github.com/mileusna/viber?status.svg)](https://godoc.org/github.com/mileusna/viber)
 
 With this package you can use [Viber REST API](https://developers.viber.com/docs/api/rest-bot-api/) to send and receive messages from Viber platform.
 
