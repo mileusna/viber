@@ -14,7 +14,7 @@ func (k *Keyboard) AddButton(b *Button) {
 }
 
 // NewKeyboard struct with attribs init
-func NewKeyboard(bgcolor string, defaultHeight bool) *Keyboard {
+func (v *Viber) NewKeyboard(bgcolor string, defaultHeight bool) *Keyboard {
 	return &Keyboard{
 		Type:          "keyboard",
 		DefaultHeight: defaultHeight,
