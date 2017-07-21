@@ -20,19 +20,6 @@ type RichMedia struct {
 	Buttons             []Button    `json:"Buttons"`
 }
 
-// Button for carousel
-type Button struct {
-	Columns    int        `json:"Columns"`
-	Rows       int        `json:"Rows"`
-	ActionType ActionType `json:"ActionType"`
-	ActionBody string     `json:"ActionBody"`
-	Image      string     `json:"Image,omitempty"`
-	Text       string     `json:"Text,omitempty"`
-	TextSize   TextSize   `json:"TextSize,omitempty"`
-	TextVAlign TextVAlign `json:"TextVAlign,omitempty"`
-	TextHAlign TextHAlign `json:"TextHAlign,omitempty"`
-}
-
 // AddButton to rich media message
 func (rm *RichMediaMessage) AddButton(b *Button) {
 	rm.RichMedia.Buttons = append(rm.RichMedia.Buttons, *b)
@@ -53,148 +40,16 @@ func (v *Viber) NewRichMediaMessage(cols, rows int, bgColor string) *RichMediaMe
 	}
 }
 
-// NewButton helper function for creating button with text and image
-func (v *Viber) NewButton(cols, rows int, typ ActionType, actionBody string, text, image string) *Button {
-	return &Button{
-		Columns:    cols,
-		Rows:       rows,
-		ActionType: typ,
-		ActionBody: actionBody,
-		Text:       text,
-		Image:      image,
-	}
+// SetKeyboard for text message
+func (rm *RichMediaMessage) SetKeyboard(k *Keyboard) {
+	// TODO
+	// rm.Keyboard = k
 }
 
-// NewImageButton helper function for creating image button struct with common params
-func (v *Viber) NewImageButton(cols, rows int, typ ActionType, actionBody string, image string) *Button {
-	return &Button{
-		Columns:    cols,
-		Rows:       rows,
-		ActionType: typ,
-		ActionBody: actionBody,
-		Image:      image,
-	}
-}
-
-// NewTextButton helper function for creating image button struct with common params
-func (v *Viber) NewTextButton(cols, rows int, t ActionType, actionBody, text string) *Button {
-	return &Button{
-		Columns:    cols,
-		Rows:       rows,
-		ActionType: t,
-		ActionBody: actionBody,
-		Text:       text,
-	}
-}
-
-// SetReceiver for text message
+// SetReceiver for RichMedia message
 func (rm *RichMediaMessage) SetReceiver(r string) {
 	rm.Receiver = r
 }
 
 // SetFrom to satisfy interface although RichMedia messages can't be sent to publich chat and don't have From
 func (rm *RichMediaMessage) SetFrom(from string) {}
-
-// TextSizeSmall for button text
-func (b *Button) TextSizeSmall() *Button {
-	b.TextSize = Small
-	return b
-}
-
-// TextSizeMedium for button text
-func (b *Button) TextSizeMedium() *Button {
-	b.TextSize = Medium
-	return b
-}
-
-// TextSizeLarge for button text
-func (b *Button) TextSizeLarge() *Button {
-	b.TextSize = Large
-	return b
-}
-
-// TextSize for carousel buttons
-// viber.Small
-// viber.Medium
-// viber.Large
-type TextSize string
-
-// TextSize values
-const (
-	Small  = TextSize("small")
-	Medium = TextSize("medium")
-	Large  = TextSize("large")
-)
-
-// ActionType for carousel buttons
-// viber.Reply
-// viber.OpenURL
-type ActionType string
-
-// ActionType values
-const (
-	Reply   = ActionType("reply")
-	OpenURL = ActionType("open-url")
-)
-
-// TextVAlign for carousel buttons
-// viber.Top
-// viber.Middle
-// viber.Bottom
-type TextVAlign string
-
-// TextVAlign values
-const (
-	Top    = TextVAlign("top")
-	Middle = TextVAlign("middle")
-	Bottom = TextVAlign("bottom")
-)
-
-// TextVAlignTop vertically align text to the top
-func (b *Button) TextVAlignTop() *Button {
-	b.TextVAlign = Top
-	return b
-}
-
-// TextVAlignMiddle vertically align text to the middle
-func (b *Button) TextVAlignMiddle() *Button {
-	b.TextVAlign = Middle
-	return b
-}
-
-// TextVAlignBottom vertically align text to the bottom
-func (b *Button) TextVAlignBottom() *Button {
-	b.TextVAlign = Bottom
-	return b
-}
-
-// TextHAlign for carousel buttons
-// viber.Left
-// viber.Center
-// viber.Middle
-type TextHAlign string
-
-// TextHAlign values
-const (
-	Left   = TextHAlign("left")
-	Center = TextHAlign("middle")
-	Right  = TextHAlign("right")
-)
-
-// TextHAlignLeft horizontaly center text left
-func (b *Button) TextHAlignLeft() *Button {
-	b.TextHAlign = Left
-	return b
-}
-
-// TextHAlignMiddle horizontaly center text
-func (b *Button) TextHAlignMiddle() *Button {
-	b.TextHAlign = Center
-	return b
-}
-
-// TextHAlignRight horizontaly align text right
-func (b *Button) TextHAlignRight() *Button {
-	b.TextHAlign = Right
-	return b
-}
