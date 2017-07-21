@@ -94,6 +94,7 @@ type ActionType string
 const (
 	Reply   = ActionType("reply")
 	OpenURL = ActionType("open-url")
+	None    = ActionType("none")
 )
 
 // TextVAlign for carousel buttons
