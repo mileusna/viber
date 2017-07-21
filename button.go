@@ -54,15 +54,36 @@ func (v *Viber) NewTextButton(cols, rows int, t ActionType, actionBody, text str
 	}
 }
 
+// TextSize for carousel buttons
+// viber.Small
+// viber.Medium (synonym to regular)
+// viber.Large
+// viber.Regular (default)
+type TextSize string
+
+// TextSize values
+const (
+	Small   = TextSize("small")
+	Medium  = TextSize("medium")
+	Large   = TextSize("large")
+	Regular = TextSize("regular")
+)
+
 // TextSizeSmall for button text
 func (b *Button) TextSizeSmall() *Button {
 	b.TextSize = Small
 	return b
 }
 
-// TextSizeMedium for button text
+// TextSizeMedium for button text, synonym to Regular
 func (b *Button) TextSizeMedium() *Button {
 	b.TextSize = Medium
+	return b
+}
+
+// TextSizeRegular for button text, synonym to Medium
+func (b *Button) TextSizeRegular() *Button {
+	b.TextSize = Regular
 	return b
 }
 
@@ -71,19 +92,6 @@ func (b *Button) TextSizeLarge() *Button {
 	b.TextSize = Large
 	return b
 }
-
-// TextSize for carousel buttons
-// viber.Small
-// viber.Medium
-// viber.Large
-type TextSize string
-
-// TextSize values
-const (
-	Small  = TextSize("small")
-	Medium = TextSize("medium")
-	Large  = TextSize("large")
-)
 
 // ActionType for carousel buttons
 // viber.Reply
@@ -99,7 +107,7 @@ const (
 
 // TextVAlign for carousel buttons
 // viber.Top
-// viber.Middle
+// viber.Middle (default)
 // viber.Bottom
 type TextVAlign string
 
@@ -130,14 +138,14 @@ func (b *Button) TextVAlignBottom() *Button {
 
 // TextHAlign for carousel buttons
 // viber.Left
-// viber.Center
+// viber.Center (default)
 // viber.Middle
 type TextHAlign string
 
 // TextHAlign values
 const (
 	Left   = TextHAlign("left")
-	Center = TextHAlign("middle")
+	Center = TextHAlign("center")
 	Right  = TextHAlign("right")
 )
 
@@ -147,8 +155,8 @@ func (b *Button) TextHAlignLeft() *Button {
 	return b
 }
 
-// TextHAlignMiddle horizontaly center text
-func (b *Button) TextHAlignMiddle() *Button {
+// TextHAlignCenter horizontaly center text
+func (b *Button) TextHAlignCenter() *Button {
 	b.TextHAlign = Center
 	return b
 }
