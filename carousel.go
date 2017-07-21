@@ -8,6 +8,7 @@ type RichMediaMessage struct {
 	MinAPIVersion int         `json:"min_api_version"`
 	RichMedia     RichMedia   `json:"rich_media"`
 	AltText       string      `json:"alt_text,omitempty"`
+	Keyboard      *Keyboard   `json:"keyboard,omitempty"`
 }
 
 // RichMedia for carousel
@@ -43,7 +44,7 @@ func (v *Viber) NewRichMediaMessage(cols, rows int, bgColor string) *RichMediaMe
 // SetKeyboard for text message
 func (rm *RichMediaMessage) SetKeyboard(k *Keyboard) {
 	// TODO
-	// rm.Keyboard = k
+	rm.Keyboard = k
 }
 
 // SetReceiver for RichMedia message
