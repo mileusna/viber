@@ -2,8 +2,9 @@ package viber
 
 // Keyboard struct
 type Keyboard struct {
-	DefaultHeight bool     `json:"DefaultHeight"`
-	BgColor       string   `json:"BgColor"`
+	Type          string   `json:"Type"`
+	DefaultHeight bool     `json:"DefaultHeight,omitempty"`
+	BgColor       string   `json:"BgColor,omitempty"`
 	Buttons       []Button `json:"Buttons"`
 }
 
@@ -15,6 +16,7 @@ func (k *Keyboard) AddButton(b *Button) {
 // NewKeyboard struct with attribs init
 func NewKeyboard(bgcolor string, defaultHeight bool) *Keyboard {
 	return &Keyboard{
+		Type:          "keyboard",
 		DefaultHeight: defaultHeight,
 		BgColor:       bgcolor,
 	}
