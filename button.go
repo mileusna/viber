@@ -2,21 +2,22 @@ package viber
 
 // Button for carousel and keyboards
 type Button struct {
-	Columns     int        `json:"Columns"`
-	Rows        int        `json:"Rows"`
-	ActionType  ActionType `json:"ActionType"`
-	ActionBody  string     `json:"ActionBody"`
-	Image       string     `json:"Image,omitempty"`
-	Text        string     `json:"Text,omitempty"`
-	TextSize    TextSize   `json:"TextSize,omitempty"`
-	TextVAlign  TextVAlign `json:"TextVAlign,omitempty"`
-	TextHAlign  TextHAlign `json:"TextHAlign,omitempty"`
-	Silent      bool       `json:"Silent,omitempty"`
-	BgColor     string     `json:"BgColor,omitempty"`
-	BgMediaType string     `json:"BgMediaType,omitempty"`
-	BgMedia     string     `json:"BgMedia,omitempty"`
-	BgLoop      bool       `json:"BgLoop,omitempty"`
-	TextOpacity int8       `json:"TextOpacity,omitempty"`
+	Columns             int        `json:"Columns"`
+	Rows                int        `json:"Rows"`
+	ActionType          ActionType `json:"ActionType"`
+	ActionBody          string     `json:"ActionBody"`
+	Image               string     `json:"Image,omitempty"`
+	Text                string     `json:"Text,omitempty"`
+	TextSize            TextSize   `json:"TextSize,omitempty"`
+	TextVAlign          TextVAlign `json:"TextVAlign,omitempty"`
+	TextHAlign          TextHAlign `json:"TextHAlign,omitempty"`
+	TextOpacity         int8       `json:"TextOpacity,omitempty"`
+	TextBgGradientColor string     `json:"TextBgGradientColor,omitempty"`
+	BgColor             string     `json:"BgColor,omitempty"`
+	BgMediaType         string     `json:"BgMediaType,omitempty"`
+	BgMedia             string     `json:"BgMedia,omitempty"`
+	BgLoop              bool       `json:"BgLoop,omitempty"`
+	Silent              bool       `json:"Silent,omitempty"`
 }
 
 // NewButton helper function for creating button with text and image
@@ -174,5 +175,20 @@ func (b *Button) SetTextOpacity(o int8) *Button {
 	if o >= 0 && o <= 100 {
 		b.TextOpacity = o
 	}
+	return b
+}
+
+// BgMediaGIF set BgMedia to GIF with loop param
+func (b *Button) BgMediaGIF(gifURL string, loop bool) *Button {
+	b.BgMediaType = "gif"
+	b.BgMedia = gifURL
+	b.BgLoop = loop
+	return b
+}
+
+// BgMediaPicture to set background to PNG or JPG. Use BgMediaGIF for GIF background
+func (b *Button) BgMediaPicture(picURL string) *Button {
+	b.BgMediaType = "picture"
+	b.BgMedia = picURL
 	return b
 }
