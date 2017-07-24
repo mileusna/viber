@@ -9,6 +9,7 @@ type RichMediaMessage struct {
 	RichMedia     RichMedia   `json:"rich_media"`
 	AltText       string      `json:"alt_text,omitempty"`
 	Keyboard      *Keyboard   `json:"keyboard,omitempty"`
+	TrackingData  string      `json:"tracking_data,omitempty"`
 }
 
 // RichMedia for carousel
@@ -17,7 +18,6 @@ type RichMedia struct {
 	ButtonsGroupColumns int         `json:"ButtonsGroupColumns"`
 	ButtonsGroupRows    int         `json:"ButtonsGroupRows"`
 	BgColor             string      `json:"BgColor"`
-	TrackingData        string      `json:"tracking_data,omitempty"`
 	Buttons             []Button    `json:"Buttons"`
 }
 
