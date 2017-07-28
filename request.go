@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 // PostData to viber API
@@ -20,8 +21,11 @@ func (v *Viber) PostData(url string, i interface{}) ([]byte, error) {
 	req.Close = true
 	req.Header.Add("X-Viber-Auth-Token", v.AppKey)
 
-	//http.DefaultClient.Timeout = time.Duration(Timeout * time.Second)
-	resp, err := http.DefaultClient.Do(req)
+	c := &http.Client{
+		Timeout: time.Duration(v.RequestTimeout) * time.Second,
+	}
+
+	resp, err := c.Do(req)
 	if err != nil {
 		return nil, err
 	}

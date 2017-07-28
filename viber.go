@@ -52,6 +52,9 @@ type Viber struct {
 	Delivered           func(v *Viber, userID string, token uint64, t time.Time)
 	Seen                func(v *Viber, userID string, token uint64, t time.Time)
 	Failed              func(v *Viber, userID string, token uint64, descr string, t time.Time)
+
+	// RequestTimeout when sending requests to viber server, in seconds
+	RequestTimeout int64
 }
 
 var (
