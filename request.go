@@ -17,14 +17,10 @@ func (v *Viber) PostData(url string, i interface{}) ([]byte, error) {
 	Log.Println("Post data:", string(b))
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
-	req.Close = true
 	req.Header.Add("X-Viber-Auth-Token", v.AppKey)
+	req.Close = true
 
-	c := &http.Client{
-		Timeout: v.RequestTimeout,
-	}
-
-	resp, err := c.Do(req)
+	resp, err := v.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
