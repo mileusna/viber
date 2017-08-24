@@ -54,12 +54,7 @@ func main() {
 At the begining you neew to declare your viber struct with you app key. Sender is default sender which will be used as default for sending all messages to the users and public account. But, for each message you can specify different sender if you like.
 
 ```go
-v := viber.Viber{
-    AppKey: "YOUR-APP-KEY-FROM-VIBER,
-    Sender: viber.Sender{
-        Name:   "MyPage",
-        Avatar: "https://mysite.com/img/avatar.jpg",
-    }}
+v := viber.New("YOUR-APP-KEY-FROM-VIBER", "MyPage", "https://mysite.com/img/avatar.jpg")
 ```
 
 Read more about _SetWebhook_ in following [chapter](#webhook).
