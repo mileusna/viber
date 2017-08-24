@@ -34,12 +34,7 @@ import (
 )
 
 func main() {
-    v := viber.Viber{
-    AppKey: "YOUR-APP-KEY-FROM-VIBER",
-    Sender: viber.Sender{
-        Name:   "MyPage",
-        Avatar: "https://mysite.com/img/avatar.jpg",
-    }}
+    v := viber.New("YOUR-APP-KEY-FROM-VIBER", "MyPage", "https://mysite.com/img/avatar.jpg")
 
     // you really need this only once, remove after you set the webhook
     v.SetWebhook("https://mysite.com/viber/webhook/", nil)
