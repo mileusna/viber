@@ -180,19 +180,19 @@ func main() {
 // myMsgReceivedFunc will be called everytime when user send us a message
 func myMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time) {
     switch m.(type) {
-    
+
     case *viber.TextMessage:
         v.SendTextMessage(u.ID, "Thank you for your message")
-        txt := m.(viber.TextMessage).Text
-        v.SendTextMessage(u.ID, "This is the text you have sent to me " + txt)
-    
+        txt := m.(*viber.TextMessage).Text
+        v.SendTextMessage(u.ID, "This is the text you have sent to me "+txt)
+
     case *viber.URLMessage:
-        url := m.(*viber.URLMessage).Media)
-        v.SendTextMessage(u.ID, "You have sent me an interesting link " + url)
-    
-    case *viber.ImageMessage:
+        url := m.(*viber.URLMessage).Media
+        v.SendTextMessage(u.ID, "You have sent me an interesting link "+url)
+
+    case *viber.PictureMessage:
         v.SendTextMessage(u.ID, "Nice pic!")
-        
+
     }
 }
 
