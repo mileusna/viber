@@ -161,7 +161,7 @@ import (
 )
 
 func main() {
-    v := viber.Viber{
+    v := &viber.Viber{
         AppKey: "YOUR-APP-KEY-FROM-VIBER",
         Sender: viber.Sender{
             Name:   "MyPage",
