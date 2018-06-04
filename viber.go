@@ -53,7 +53,7 @@ type Viber struct {
 	Seen                func(v *Viber, userID string, token uint64, t time.Time)
 	Failed              func(v *Viber, userID string, token uint64, descr string, t time.Time)
 
-	// client for sendint messages
+	// client for sending messages
 	client *http.Client
 }
 
@@ -218,5 +218,8 @@ func peakMessageType(b []byte) string {
 
 // SetRequestTimeout for sending messages to viber server
 func (v *Viber) SetRequestTimeout(t time.Duration) {
+	if v.client == nil {
+		v.client = &http.Client{}
+	}
 	v.client.Timeout = t
 }
