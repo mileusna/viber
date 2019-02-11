@@ -1,3 +1,7 @@
+# MiXaiLL76 update
+ 
+  * [Remove Webhook](#webhook)
+
 # Go/Golang package for Viber messaging and chatbot [![GoDoc](https://godoc.org/github.com/mileusna/viber?status.svg)](https://godoc.org/github.com/mileusna/viber)
 
 With this package you can use [Viber REST API](https://developers.viber.com/docs/api/rest-bot-api/) to send and receive messages from Viber platform.
@@ -73,6 +77,12 @@ To be able to receive messages and notifications from Viber you have to specify 
 // Mandatory callbacks: "message", "subscribed", "unsubscribed"
 // All possible callbacks: "message", "subscribed",  "unsubscribed", "delivered", "seen", "failed", "conversation_started"
 v.SetWebhook("https://mysite.com/viber/webhook/", nil)
+```
+
+For removing webhook:
+[Viber documentation "Removing your webhook"](https://developers.viber.com/docs/api/rest-bot-api/#removing-your-webhook).
+```go
+v.RemoveWebhook()
 ```
 
 ## Messaging <a id="messaging"></a>
