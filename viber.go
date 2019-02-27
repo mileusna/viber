@@ -187,7 +187,13 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
-
+			case "file":
+				var m FileMessage
+				if err := json.Unmarshal(e.Message, &m); err != nil {
+					Log.Println(err)
+					return
+				}
+				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
 			case "contact":
 				// TODO
 			case "location":

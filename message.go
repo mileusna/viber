@@ -51,6 +51,13 @@ type URLMessage struct {
 	Media string `json:"media"`
 }
 
+// FileMessage structure
+type FileMessage struct {
+	URLMessage
+	Size     uint   `json:"size"`
+	FileName string `json:"file_name"`
+}
+
 // PictureMessage structure
 type PictureMessage struct {
 	TextMessage
