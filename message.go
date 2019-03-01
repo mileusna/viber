@@ -38,7 +38,7 @@ type TextMessage struct {
 	Type          MessageType `json:"type"`
 	TrackingData  string      `json:"tracking_data,omitempty"`
 	Text          string      `json:"text"`
-	Keyboars      *Keyboard   `json:"keyboard,omitempty"`
+	Keyboard      *Keyboard   `json:"keyboard,omitempty"`
 	//    "media": "http://www.images.com/img.jpg",
 	//    "thumbnail": "http://www.images.com/thumb.jpg"
 	// 	"size": 10000,
@@ -187,5 +187,5 @@ func (m *TextMessage) SetFrom(from string) {
 
 // SetKeyboard for text message
 func (m *TextMessage) SetKeyboard(k *Keyboard) {
-	m.Keyboars = k
+	m.Keyboard = k
 }
