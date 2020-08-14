@@ -2,8 +2,8 @@ package viber
 
 // Button for carousel and keyboards
 type Button struct {
-	Columns             int        `json:"Columns"`
-	Rows                int        `json:"Rows"`
+	Columns             int        `json:"Columns,omitempty"`
+	Rows                int        `json:"Rows,omitempty"`
 	ActionType          ActionType `json:"ActionType"`
 	ActionBody          string     `json:"ActionBody"`
 	Image               string     `json:"Image,omitempty"`
