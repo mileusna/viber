@@ -19,6 +19,18 @@ type Sender struct {
 	Avatar string `json:"avatar,omitempty"`
 }
 
+// Contact structure
+type Contact struct {
+	Name        string `json:"name"`
+	PhoneNumber string `json:"phone_number"`
+}
+
+// Location structure
+type Location struct {
+	Latitude  string `json:"lat"`
+	Longitude string `json:"lon"`
+}
+
 type event struct {
 	Event        string    `json:"event"`
 	Timestamp    Timestamp `json:"timestamp"`
@@ -37,6 +49,12 @@ type event struct {
 	// message event
 	Sender  json.RawMessage `json:"sender,omitempty"`
 	Message json.RawMessage `json:"message,omitempty"`
+
+	// location event
+	Location json.RawMessage `json:"location,omitempty"`
+
+	// contact event
+	Contact json.RawMessage `json:"contact,omitempty"`
 }
 
 // Viber app
@@ -189,9 +207,19 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
 
 			case "contact":
-				// TODO
+				var m ContactMessage
+				if err := json.Unmarshal(e.Message, &m); err != nil {
+					Log.Println(err)
+					return
+				}
+				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
 			case "location":
-				// TODO
+				var m LocationMessage
+				if err := json.Unmarshal(e.Message, &m); err != nil {
+					Log.Println(err)
+					return
+				}
+				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
 			default:
 				return
 			}

@@ -67,6 +67,18 @@ type VideoMessage struct {
 	Duration  uint   `json:"duration,omitempty"`
 }
 
+// ContactMessage structure
+type ContactMessage struct {
+	TextMessage
+	Contact Contact `json:"contact"`
+}
+
+// LocationMessage strucutre
+type LocationMessage struct {
+	TextMessage
+	Location Location `json:"location"`
+}
+
 // MessageType for viber messaging
 type MessageType string
 
