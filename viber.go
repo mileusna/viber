@@ -189,9 +189,21 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
 
 			case "contact":
-				// TODO
+				var m ContactMessage
+				if err := json.Unmarshal(e.Message, &m); err != nil {
+					Log.Println(err)
+					return
+				}
+				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
+
 			case "location":
-				// TODO
+				var m LocationMessage
+				if err := json.Unmarshal(e.Message, &m); err != nil {
+					Log.Println(err)
+					return
+				}
+				go v.Message(v, u, &m, e.MessageToken, e.Timestamp.Time)
+
 			default:
 				return
 			}
